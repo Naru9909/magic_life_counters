@@ -5,7 +5,7 @@ import {
   liveElapsed,
   useGameStore,
 } from './useGameStore';
-import { resetStore, simulateReload, startMatch } from '../test/helpers';
+import { resetStore, playerAt, simulateReload, startMatch } from '../test/helpers';
 
 beforeEach(() => {
   resetStore();
@@ -293,6 +293,44 @@ describe('timer', () => {
 });
 
 describe('resets and persistence', () => {
+  it('leaves neither state nor storage behind after a reset', () => {
+    startMatch();
+    useGameStore.getState().adjustLife(playerAt(0).id, -3);
+    expect(window.localStorage.getItem(STORAGE_KEY)).not.toBeNull();
+
+    resetStore();
+
+    const state = useGameStore.getState();
+    expect(state.screen).toBe('setup');
+    expect(state.players).toHaveLength(0);
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBeNull();
+  });
+
+  it('keeps the persisted version and field set', () => {
+    startMatch();
+
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    expect(raw).not.toBeNull();
+
+    const payload = JSON.parse(raw ?? '') as { version: number; state: Record<string, unknown> };
+    expect(payload.version).toBe(1);
+    expect(Object.keys(payload.state).sort()).toEqual([
+      'activePlayerIndex',
+      'diceHistory',
+      'gameNumber',
+      'gamesPlayed',
+      'haptics',
+      'keepAwake',
+      'matchMode',
+      'matchWinnerId',
+      'players',
+      'screen',
+      'startingLife',
+      'timer',
+      'turnTimes',
+    ]);
+  });
+
   it('persists the game state to local storage', () => {
     startMatch();
     const alice = useGameStore.getState().players[0];
