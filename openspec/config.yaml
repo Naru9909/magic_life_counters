@@ -22,7 +22,7 @@ session:
   execution_mode: auto
   artifact_store: hybrid
   delivery_strategy: auto-chain
-  chain_strategy: undecided
+  chain_strategy: feature-branch-chain
   review_budget_lines: 800
   conversation_language: es
   artifact_language: en
@@ -52,7 +52,7 @@ rules:
     - Use Given/When/Then for scenarios.
     - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY).
     - Express requirements in observable user-visible behavior; reuse the domain vocabulary from src/types.ts.
-    - Every scenario MUST be implementable as an automated test (vitest + Testing Library).
+    - Every scenario MUST be implementable as an automated test (vitest + Testing Library) **or be explicitly classified EXEMPT with a named verification layer and a recorded rationale.**
   design:
     - Document architecture decisions with rationale.
     - Keep domain logic in src/store/useGameStore.ts; components stay presentational and read state through store selectors.
