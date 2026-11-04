@@ -62,3 +62,7 @@ The whole game is persisted in `localStorage` and restored on reload.
 - The turn timer tracks wall-clock time (`startedAt`), not a tick counter, so it stays accurate
   across reloads and background tabs.
 - Every interactive target is at least 44×44px; no horizontal overflow from 320px to 1280px.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
