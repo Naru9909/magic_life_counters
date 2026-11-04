@@ -1,0 +1,413 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 100dvh;
+  padding: calc(8px + var(--safe-top)) calc(10px + var(--safe-right))
+    calc(var(--bottom-reserve) + var(--safe-bottom)) calc(10px + var(--safe-left));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-width: 940px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.titleBrand {
+  display: none;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status {
+  min-width: 0;
+  color: var(--accent);
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ring {
+  position: relative;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.ringCore {
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.35;
+}
+
+.ringDot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.ringDot[data-active='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform-origin: center;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+}
+
+.winnerBanner {
+  padding: 6px 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--bg);
+  background: var(--accent);
+  border-radius: var(--radius);
+  max-width: 940px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/*
+ * The column count follows the number of players, not only the viewport width.
+ * `minmax()` keeps the tracks fluid, so the grid degrades gracefully.
+ */
+.board {
+  --board-columns: 2;
+  --board-gap: 8px;
+  display: grid;
+  gap: var(--board-gap);
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(
+      calc((100% - (var(--board-columns) - 1) * var(--board-gap)) / var(--board-columns)),
+      1fr
+    )
+  );
+  align-content: start;
+  width: 100%;
+  max-width: min(940px, calc(var(--board-columns) * 380px));
+  margin: 0 auto;
+}
+
+.board[data-players='2'] {
+  --board-columns: 1;
+}
+
+.board[data-players='3'],
+.board[data-players='4'] {
+  --board-columns: 2;
+}
+
+.board[data-players='5'],
+.board[data-players='6'] {
+  --board-columns: 3;
+}
+
+/* Very narrow phones cannot host three columns and keep 44px touch targets. */
+@media (max-width: 374px) {
+  .board[data-players='5'],
+  .board[data-players='6'] {
+    --board-columns: 2;
+  }
+}
+
+.toolbarWrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  padding: 6px calc(10px + var(--safe-right)) calc(6px + var(--safe-bottom))
+    calc(10px + var(--safe-left));
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+.toolbarWrap > nav {
+  max-width: 940px;
+  margin: 0 auto;
+}
+
+.fab {
+  position: fixed;
+  right: calc(16px + var(--safe-right));
+  bottom: calc(var(--bar-height) + 12px + var(--safe-bottom));
+  z-index: 21;
+  width: var(--fab-size);
+  height: var(--fab-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--bg);
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  user-select: none;
+}
+
+.fab:active {
+  filter: brightness(0.92);
+  transform: scale(0.96);
+}
+
+.sheetStack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.fieldHint {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--text-dim);
+}
+
+.fieldInput {
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: 0 12px;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.fieldInput:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: var(--tap-min);
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+}
+
+.playerList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.playerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 4px 4px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.playerName {
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowButton {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--life-down);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.rowButton:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.stepGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.stepButton {
+  min-height: var(--tap-min);
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.counterList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.action,
+.dangerButton,
+.primaryAction {
+  min-height: var(--tap-min);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.action:disabled,
+.primaryAction:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.dangerButton {
+  color: var(--life-down);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.primaryAction {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+@media (min-width: 640px) {
+  .app {
+    padding-left: calc(16px + var(--safe-left));
+    padding-right: calc(16px + var(--safe-right));
+  }
+
+  .title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .titleBrand {
+    display: inline;
+  }
+
+  .ring {
+    width: 48px;
+    height: 48px;
+  }
+
+  .board[data-players='2'] {
+    --board-columns: 2;
+  }
+
+  .board[data-players='3'],
+  .board[data-players='4'] {
+    --board-columns: 3;
+  }
+
+  .board[data-players='5'],
+  .board[data-players='6'] {
+    --board-columns: 4;
+  }
+}
+
+/* Short viewports (phone landscape) keep everything reachable with less chrome. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .app {
+    gap: 6px;
+  }
+
+  .header {
+    padding: 3px 8px;
+  }
+
+  .ring {
+    width: 32px;
+    height: 32px;
+  }
+}

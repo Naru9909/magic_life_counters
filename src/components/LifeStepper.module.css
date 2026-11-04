@@ -1,0 +1,116 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.valueRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.value {
+  font-family: var(--font-numeric);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  transition: color 0.24s ease-out;
+  white-space: nowrap;
+  min-width: 0;
+  /* Fallback for browsers without container query support. */
+  font-size: clamp(2.25rem, 16vw, 6.5rem);
+}
+
+@supports (container-type: inline-size) {
+  .value {
+    /* Shrinks automatically when the life total needs more than a few digits. */
+    font-size: clamp(2.25rem, min(50cqw, calc(92cqi / (0.62 * var(--digits, 2)))), 6.5rem);
+  }
+}
+
+.value[data-flash='up'] {
+  color: var(--life-up);
+}
+
+.value[data-flash='down'] {
+  color: var(--life-down);
+}
+
+.primary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.bigButton {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  line-height: 1;
+  font-weight: 600;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.bigButton:active {
+  background: #1e2b45;
+  transform: translateY(1px);
+}
+
+.quick {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.quickButton {
+  min-height: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.quickButton:active {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* Wide cards fit the four quick steps in a single row. */
+@container (min-width: 180px) {
+  .quick {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Narrow cards keep a single row with the two closest steps; ±10 lives in the sheet. */
+@container (max-width: 179px) {
+  .quickButton[data-step='10'] {
+    display: none;
+  }
+}
+
+/* Short viewports (phone landscape) get a more compact life total. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .value {
+    font-size: clamp(2.25rem, min(30cqw, calc(92cqi / (0.62 * var(--digits, 2)))), 4rem);
+  }
+}

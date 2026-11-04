@@ -1,0 +1,15 @@
+# Normalize line endings for all text files
+* text=auto eol=lf
+
+# Binary assets — never diff, never transform
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+
+# Lockfiles are generated — collapse them in diffs
+package-lock.json -diff linguist-generated=true

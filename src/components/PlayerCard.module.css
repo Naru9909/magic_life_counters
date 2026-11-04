@@ -1,0 +1,176 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  container-type: inline-size;
+  transition: transform 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.card[data-active='true'] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
+
+/* Tapped players are rotated and dimmed, never hidden: the life total stays readable. */
+.card[data-tapped='true'] {
+  transform: rotate(-1.4deg);
+  opacity: 0.78;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas: 'name tap tokens';
+  align-items: center;
+  gap: 6px;
+}
+
+.name {
+  grid-area: name;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--tap-min);
+  padding: 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  text-overflow: ellipsis;
+}
+
+.name:hover {
+  border-color: var(--border);
+}
+
+.name:focus {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  outline: none;
+}
+
+.tapButton,
+.tokensButton {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tapButton {
+  grid-area: tap;
+}
+
+.tokensButton {
+  grid-area: tokens;
+}
+
+.tapButton[aria-pressed='true'] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.tokensButton:active {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.tapIcon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+/* Narrow cards stack the name on its own line. */
+@container (max-width: 179px) {
+  .head {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'name name'
+      'tap tokens';
+  }
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.turnBadge,
+.tappedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+}
+
+.turnBadge {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.tappedBadge {
+  background: var(--surface-2);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.summaryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.summaryDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.summaryChip[data-kind='buff'] .summaryDot {
+  background: var(--life-up);
+}
+
+.summaryChip[data-kind='hazard'] .summaryDot {
+  background: var(--life-down);
+}

@@ -1,0 +1,61 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.owner {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.clock {
+  text-align: center;
+  font-family: var(--font-numeric);
+  font-size: clamp(3rem, 16vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.total {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.total strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.button {
+  min-height: var(--tap-min);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.button:active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
