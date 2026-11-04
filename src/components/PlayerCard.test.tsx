@@ -92,6 +92,8 @@ describe('the card name', () => {
 
     expect(input).toHaveValue('Alicia');
     expect(useGameStore.getState().players[0].name).toBe('Alicia');
+    expect(screen.getByLabelText(t('lifeValue', { name: 'Alicia' }))).toHaveTextContent('20');
+    expect(screen.queryByLabelText(t('lifeValue', { name: entry.name }))).not.toBeInTheDocument();
   });
 
   it('rejects a blank name', async () => {
