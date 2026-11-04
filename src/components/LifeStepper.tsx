@@ -40,6 +40,7 @@ export default function LifeStepper({ value, name, onDelta }: LifeStepperProps) 
       <div className={styles.valueRow}>
         <span
           className={styles.value}
+          aria-label={t('lifeValue', { name })}
           data-flash={flash ?? 'none'}
           style={{ '--digits': String(digits) } as CSSProperties}
         >
