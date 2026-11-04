@@ -101,6 +101,11 @@ describe('the life controls', () => {
 
     expect(screen.getByLabelText(t('lifeValue', { name: first.name }))).toHaveTextContent('19');
     expect(screen.getByLabelText(t('lifeValue', { name: second.name }))).toHaveTextContent('20');
+
+    await user.click(screen.getByRole('button', { name: t('lifeIncrease', { name: first.name }) }));
+
+    expect(screen.getByLabelText(t('lifeValue', { name: first.name }))).toHaveTextContent('20');
+    expect(screen.getByLabelText(t('lifeValue', { name: second.name }))).toHaveTextContent('20');
   });
 
   it('applies its own magnitude on the quick steps', async () => {
@@ -125,6 +130,16 @@ describe('the life controls', () => {
       screen.getByRole('button', { name: t('lifeIncreaseBy', { name: first.name, amount: 5 }) }),
     );
     expect(screen.getByLabelText(t('lifeValue', { name: first.name }))).toHaveTextContent('15');
+
+    await user.click(
+      screen.getByRole('button', { name: t('lifeDecreaseBy', { name: first.name, amount: 5 }) }),
+    );
+    expect(screen.getByLabelText(t('lifeValue', { name: first.name }))).toHaveTextContent('10');
+
+    await user.click(
+      screen.getByRole('button', { name: t('lifeIncreaseBy', { name: first.name, amount: 10 }) }),
+    );
+    expect(screen.getByLabelText(t('lifeValue', { name: first.name }))).toHaveTextContent('20');
   });
 
   it('allows the total to go negative', async () => {
