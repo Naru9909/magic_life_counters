@@ -151,7 +151,7 @@ Two spec-side inconsistencies recorded in `design.md` remain **unfixed**. They a
 | 1 | The counter-chip slice tag: `life-counter-ui` lists `src/components/CounterBadge.test.tsx` under **S1**, while the design (and the spec's own surface table, `specs/life-counter-ui/spec.md:204`) puts the counter chip in **S3**. The design's placement wins — `CounterBadge.test.tsx` is created in S3, and the "counter chips collapse to non-zero values" requirement is satisfied in S1 through `src/components/PlayerCard.test.tsx`. | `specs/life-counter-ui/spec.md:157` | **Open** — not fixed by this change; no spec file was modified. |
 | 2 | The swapped remove-player / award-win slice tags: `ui-accessibility` tags remove player **S2** and award win **S3**, but the controls physically live in the opposite slices — remove-player is only reachable from the "More" panel (`src/App.settings.test.tsx`, **S3**) and award-win only from `src/components/MatchTracker.test.tsx` (**S2**). The design's placement wins; every named case is covered, only the commit order differs from the spec's hint. | `specs/ui-accessibility/spec.md:140` | **Open** — not fixed by this change; no spec file was modified. |
 
-Also still open from this slice: **PR #1 is not created** (`gh` is unauthenticated) and the **S1a/S1b split decision** is escalated to the orchestrator.
+Both spec-side inconsistencies above remain open. The two items that were escalated from this slice — the **PR #1 creation** and the **S1a/S1b split decision** — were resolved by the human on 2026-11-04 and are recorded in *Slice 1 delivery decisions* below: the split is applied at the `e4822db` boundary (520 | 405), and the PRs are opened by the human.
 
 ## PR #1 — not opened (`gh` is not authenticated)
 
@@ -165,6 +165,41 @@ gh pr create --base tracker --head s1 \
 ```
 
 Or open it directly: <https://github.com/Naru9909/magic_life_counters/compare/tracker...s1>
+
+## Slice 1 delivery decisions (human, 2026-11-04)
+
+Two decisions closed the open items of this slice.
+
+**1. The review-budget split is APPLIED at the `e4822db` boundary.** S1 measured 923 authored code lines against the 800-line review budget, so the task-2.11 contingency was armed. The literal split in the task (S1a = 2.1 + 2.2 + 2.7) was **rejected** because it ships a red PR: with the guard (work-unit commit 5) landing before the store-suite migration (commit 3), guard G2 fires against `main`'s store test, which still calls `localStorage.clear()`. The approved boundary is **after work-unit commit 5**, which keeps commit 3 before commit 5:
+
+| PR | Head | Base | Commits | Authored code | Total |
+|---|---|---|---|---|---|
+| **#1a** | `s1a` | `tracker` | 1–5 (`e4822db`) | **520** | 520 |
+| **#1b** | `s1` | `s1a` | 6–13 (`2cb86b9`) | **405** | 619 |
+
+Both halves are under the 800-line budget and both were verified **green by execution**: the suite was run at the `e4822db` commit in a detached worktree (41 tests pass) and at `29aea16` (36 tests pass). Branch `s1a` was created at `e4822db` and pushed; branch `s1` holds commits 6–13. `tracker` and `s1` carry byte-identical `openspec/changes/` bookkeeping, so the final merge into `main` is conflict-free.
+
+**2. PR creation belongs to the human.** The agent must not authenticate `gh` and must not open PRs. Both branches are pushed and the exact `--base`/`--head` pairs are recorded here; the human opens the PRs.
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+
+# PR #1a — 520 lines
+gh pr create --base tracker --head s1a \
+  --title "test(seam): add the shared test seam, the source guards and the two production fixes" \
+  --body "Slice 1a of component-tests: openspec/config.yaml (ratified EXEMPT rule + chain strategy), src/test/helpers.tsx, the G1–G4 source guards, PD1 (accessible name for the life total) and PD2 (clearStoredData ordering), plus the store-suite migration onto the shared helper."
+
+# PR #1b — 405 lines
+gh pr create --base s1a --head s1 \
+  --title "test(app): cover the life loop with a render-layer suite" \
+  --body "Slice 1b of component-tests: the LifeStepper, PlayerCard and App suites, the store-reset and persisted-payload contracts, and the rename/accessibility-name assertion."
+```
+
+Or open them directly:
+- PR #1a → <https://github.com/Naru9909/magic_life_counters/compare/tracker...s1a>
+- PR #1b → <https://github.com/Naru9909/magic_life_counters/compare/s1a...s1>
+
+`main` stays untouched at `3b902d7` until the chain is merged.
 
 ## Rollback
 
