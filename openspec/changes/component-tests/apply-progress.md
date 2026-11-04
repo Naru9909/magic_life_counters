@@ -13,8 +13,8 @@ Two items remain **outside my control** and are flagged below: the **PR #1 creat
 
 | Branch | Base | Remote | Purpose |
 |---|---|---|---|
-| `tracker` | `main` @ `3b902d7` | pushed (`git push -u origin tracker:tracker`) | Chain accumulation point; the only branch that will reach `main`. |
-| `s1` | `tracker` @ `3b902d7` | pushed (`git push -u origin s1:s1`) | Slice 1 — PR #1 head. |
+| `tracker` | `main` @ `3b902d7` | pushed (`git push -u origin tracker:tracker`) | Chain accumulation point; the only branch that will reach `main`. Carries the SDD bookkeeping (`931927d`). |
+| `s1` | `tracker` @ `3b902d7` | pushed (`git push -u origin s1:s1`) | Slice 1 — PR #1 head. Carries the seven work-unit commits plus the same SDD bookkeeping (`ca2605b`). |
 
 | # | Commit | Files | Task |
 |---|---|---|---|
@@ -25,6 +25,9 @@ Two items remain **outside my control** and are flagged below: the **PR #1 creat
 | 5 | `e4822db` `test(guards): forbid hand-built player fixtures and duplicate resets` | `src/test/guards/sourceGuards.test.ts` | 2.7 |
 | 6 | `12cb5e7` `test(player-card): cover the player card contract` | `src/components/PlayerCard.test.tsx` | 2.8 |
 | 7 | `2093b18` `test(app): cover the board, next turn and live regions` | `src/App.test.tsx` | 2.9 |
+| 8 | `ca2605b` `docs(sdd): record the component-tests slice 1 apply progress` | `openspec/changes/component-tests/tasks.md` + `apply-progress.md` | SDD bookkeeping (not a work unit) |
+
+Commit 8 is **process bookkeeping, not authored code**: it is the marked tasks artifact plus this report. The same content is committed on `tracker` as `931927d` so the chain carries it into `main`; the two copies are byte-identical and merge cleanly. The **review-budget number is the authored code diff (868 lines)** — the bookkeeping commit must be grouped with the *first* half of any split (see the review-budget section).
 
 Commit order is load-bearing and was honoured: **commit 3 (store-suite migration) landed before commit 5 (guard G2)**. Proven necessary — restoring `main`'s private `resetStore` makes the guard fail:
 
@@ -98,16 +101,17 @@ Commit order is load-bearing and was honoured: **commit 3 (store-suite migration
 
 ## Review budget — S1a/S1b contingency is ARMED
 
-`git diff --numstat main...s1` → **841 additions + 27 deletions = 868 authored changed lines**, which is **68 lines over** the 800-line budget (`session.review_budget_lines: 800`).
+`git diff --numstat main...s1` → **841 additions + 27 deletions = 868 authored changed lines**, which is **68 lines over** the 800-line budget (`session.review_budget_lines: 800`). The branch also carries commit 8 (the SDD bookkeeping, 159 lines of markdown) → 1,027 lines in total; the **868** figure is the authored-code diff the budget applies to.
 
 Measured split candidates (both ≤ 800):
 
 | Split | Boundary | Size | Verdict |
 |---|---|---|---|
-| **A — as task 2.11 literally states** (2.1 + 2.2 + 2.7) \| (2.3–2.6 + 2.8 + 2.9) | commits 1+2+5 \| 3+4+6+7 | S1a **318** / S1b **552** | ❌ **S1a would be RED.** The guard (commit 5) lands in S1a while the store-suite migration (commit 3) stays in S1b, so guard G2 fires against `main`'s `localStorage.clear()`. Proven by restoring `main`'s store test: the guard fails. |
+| **A — as task 2.11 literally states** (2.1 + 2.2 + 2.7) \| (2.3–2.6 + 2.8 + 2.9) | commits 1+2+5 \| 3+4+6+7 | S1a **318** / S1b **552** | ❌ **S1a would be RED.** The guard (commit 5) lands in S1a while the store-suite migration (commit 3) stays in S1b, so guard G2 fires against \`main\`'s \`localStorage.clear()\`. Proven by restoring \`main\`'s store test: the guard fails. |
 | **B — order-preserving** (commits 1–3 \| 4–7) | commits 1+2+3 \| 4+5+6+7 | S1a' **205** / S1b' **665** | ✅ Both ≤ 800 and the load-bearing commit-3-before-commit-5 order is preserved. |
+| **B′ — split B + the bookkeeping commit in the first half** | commits 1+2+3+8 \| 4+5+6+7 | S1a'' **364** / S1b'' **665** | ✅ **Recommended.** Keeps the bookkeeping (commit 8) with the first PR so neither half exceeds the budget. |
 
-**Split B is the correct way to apply the contingency.** It was **not** applied unilaterally — the branch keeps the seven commits the work-unit map specifies, and the overage is flagged for the orchestrator.
+**Split B′ is the correct way to apply the contingency.** It was **not** applied unilaterally — the branch keeps the seven work-unit commits the work-unit map specifies, and the overage is flagged for the orchestrator.
 
 ## PR #1 — not opened (`gh` is not authenticated)
 
