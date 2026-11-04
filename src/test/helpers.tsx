@@ -92,11 +92,19 @@ export function winnerRegions(name: string): HTMLElement[] {
 /**
  * Simulates a cold boot: the blob is captured, memory is reset, the blob is
  * restored and the store rehydrates exactly like a fresh page load.
+ *
+ * `persist` re-writes the key on every state change, so the memory reset
+ * leaves a key behind. A cold boot with no stored game leaves NO key, so the
+ * reset key is removed again before the rehydration reads the storage.
  */
 export async function simulateReload(): Promise<void> {
   const blob = window.localStorage.getItem(STORAGE_KEY);
   useGameStore.setState(createInitialState());
-  if (blob !== null) window.localStorage.setItem(STORAGE_KEY, blob);
+  if (blob !== null) {
+    window.localStorage.setItem(STORAGE_KEY, blob);
+  } else {
+    window.localStorage.removeItem(STORAGE_KEY);
+  }
   await useGameStore.persist.rehydrate();
 }
 

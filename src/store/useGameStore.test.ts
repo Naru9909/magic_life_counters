@@ -2,33 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   MAX_PLAYERS,
   STORAGE_KEY,
-  createInitialState,
   liveElapsed,
   useGameStore,
 } from './useGameStore';
-import type { MatchMode } from '../types';
-
-interface MatchOverrides {
-  playerCount?: number;
-  names?: string[];
-  matchMode?: MatchMode;
-  startingLife?: number;
-}
-
-function resetStore() {
-  localStorage.clear();
-  useGameStore.setState(createInitialState());
-}
-
-function startMatch(overrides: MatchOverrides = {}) {
-  const playerCount = overrides.playerCount ?? 2;
-  useGameStore.getState().startMatch({
-    playerCount,
-    names: overrides.names ?? ['Alice', 'Bob', 'Carol', 'Dave', 'Erin', 'Frank'],
-    matchMode: overrides.matchMode ?? 'single',
-    startingLife: overrides.startingLife ?? 20,
-  });
-}
+import { resetStore, simulateReload, startMatch } from '../test/helpers';
 
 beforeEach(() => {
   resetStore();
@@ -348,6 +325,30 @@ describe('resets and persistence', () => {
     expect(state.screen).toBe('setup');
     expect(state.players).toHaveLength(0);
     expect(state.history).toHaveLength(0);
+  });
+
+  it('removes the persisted key when the stored data is cleared', () => {
+    startMatch();
+    expect(window.localStorage.getItem(STORAGE_KEY)).not.toBeNull();
+
+    useGameStore.getState().clearStoredData();
+
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBeNull();
+    const state = useGameStore.getState();
+    expect(state.screen).toBe('setup');
+    expect(state.players).toHaveLength(0);
+  });
+
+  it('keeps the cleared key absent after a reload', async () => {
+    startMatch();
+    useGameStore.getState().clearStoredData();
+
+    await simulateReload();
+
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBeNull();
+    const state = useGameStore.getState();
+    expect(state.screen).toBe('setup');
+    expect(state.players).toHaveLength(0);
   });
 
   it('goes back to the setup screen when a new match starts', () => {

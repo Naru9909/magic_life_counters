@@ -530,12 +530,12 @@ function createActions(setState: SetState, getState: GetState): GameActions {
     setMatchMode: (mode) => setState({ matchMode: mode }),
 
     clearStoredData: () => {
+      setState(createInitialState());
       try {
         window.localStorage.removeItem(STORAGE_KEY);
       } catch {
         // Storage can be unavailable in private browsing modes.
       }
-      setState(createInitialState());
     },
   };
 }
